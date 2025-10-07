@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { apiRequest } from "../../utils/apiClient";
 
-
 interface ApiResponse {
   user: UserData;
 }
@@ -15,8 +14,8 @@ interface UserData {
   verification_level: number;
   profile_img: string | null;
   family?: string;
-  name_display?: string; 
-  level_account?: number; 
+  name_display?: string;
+  level_account?: number;
   date_register?: string;
 }
 
@@ -29,7 +28,9 @@ async function getUserInfo(): Promise<UserData> {
   const userDataFromApi = response.user;
 
   const level = userDataFromApi.level_account || 0;
-  const fullName = userDataFromApi.name_display || (userDataFromApi.name + " " + (userDataFromApi.family || ""));
+  const fullName =
+    userDataFromApi.name_display ||
+    userDataFromApi.name + " " + (userDataFromApi.family || "");
 
   return {
     id: userDataFromApi.id,
@@ -51,37 +52,39 @@ import IdentyIcon from "../../assets/Icons/authentication/IdentyIcon";
 import IconCardIdenty from "../../assets/Icons/authentication/IconCardIdenty";
 import BreadcrumbNavigation from "../../components/BreadcrumbNavigation";
 
-
 // تابع برای فرمت‌بندی تاریخ شمسی
 function formatPersianDate(dateStr: string): string {
   if (!dateStr || dateStr === "---") return "---";
 
   const [day, month, year] = dateStr.split(" ");
   const persianMonths: { [key: string]: number } = {
-    "فروردین": 1,
-    "اردیبهشت": 2,
-    "خرداد": 3,
-    "تیر": 4,
-    "مرداد": 5,
-    "شهریور": 6,
-    "مهر": 7,
-    "آبان": 8,
-    "آذر": 9,
-    "دی": 10,
-    "بهمن": 11,
-    "اسفند": 12
+    فروردین: 1,
+    اردیبهشت: 2,
+    خرداد: 3,
+    تیر: 4,
+    مرداد: 5,
+    شهریور: 6,
+    مهر: 7,
+    آبان: 8,
+    آذر: 9,
+    دی: 10,
+    بهمن: 11,
+    اسفند: 12,
   };
 
   const monthNum = persianMonths[month];
   if (!monthNum) return dateStr;
 
-  return `${year}/${monthNum.toString().padStart(2, '0')}/${day.padStart(2, '0')}`;
+  return `${year}/${monthNum.toString().padStart(2, "0")}/${day.padStart(
+    2,
+    "0"
+  )}`;
 }
 
 export default function Profile() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null); 
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -91,7 +94,9 @@ export default function Profile() {
         setUserData(data);
       } catch (err) {
         console.error("Failed to fetch user data:", err);
-        setError(err instanceof Error ? err : new Error("Unknown error occurred"));
+        setError(
+          err instanceof Error ? err : new Error("Unknown error occurred")
+        );
       } finally {
         setLoading(false);
       }
@@ -112,29 +117,31 @@ export default function Profile() {
     ? formatPersianDate(userData.join_date)
     : "---";
 
-    // برای بخش پروفایل حرف اول و اسم و فامیل کاربر و در نظر گرفتم 
+  // برای بخش پروفایل حرف اول و اسم و فامیل کاربر و در نظر گرفتم
   const getInitials = () => {
     const nameInitial = userData?.name?.charAt(0).toUpperCase() || "";
     const familyInitial = userData?.family?.charAt(0).toUpperCase() || "";
-    return nameInitial && familyInitial ? `${nameInitial} ${familyInitial}` : nameInitial || "N/A";
+    return nameInitial && familyInitial
+      ? `${nameInitial} ${familyInitial}`
+      : nameInitial || "N/A";
   };
 
-  if (loading) {
-    return (
-      <HeaderLayout>
-        <div className="p-10 text-center">در حال بارگذاری اطلاعات...</div>
-      </HeaderLayout>
-    );
-  }
-  if (error || !userData) {
-    return (
-      <HeaderLayout>
-        <div className="p-10 text-center text-red1">
-          {error ? error.message : "خطا در دریافت اطلاعات کاربر."}
-        </div>
-      </HeaderLayout>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <HeaderLayout>
+  //       <div className="p-10 text-center">در حال بارگذاری اطلاعات...</div>
+  //     </HeaderLayout>
+  //   );
+  // }
+  // if (error || !userData) {
+  //   return (
+  //     <HeaderLayout>
+  //       <div className="p-10 text-center text-red1">
+  //         {error ? error.message : "خطا در دریافت اطلاعات کاربر."}
+  //       </div>
+  //     </HeaderLayout>
+  //   );
+  // }
 
   return (
     <>
@@ -144,10 +151,12 @@ export default function Profile() {
           <div className="bg-gray25 w-full lg:shadow-[0_0_12px_0_rgba(0,0,0,0.16)] rounded-2xl lg:pb-10">
             <div>
               <div className="flex items-center justify-center flex-col">
-                {userData.profile_img ? (
+                {loading ? (
+                  <span className="w-32 h-32 rounded-full bg-blue13 animate-pulse"></span>
+                ) : userData?.profile_img ? (
                   <img
                     className="mb-6 lg:mt-14 mt-8 rounded-full w-32 h-32 object-cover"
-                    src={userData.profile_img}
+                    src={userData?.profile_img}
                     alt="ProfilePicture"
                   />
                 ) : (
@@ -166,13 +175,17 @@ export default function Profile() {
                     <span>تاریخ عضویت</span>
                   </div>
                   <div className="flex flex-col gap-4 text-black1">
-                    <span>
-                      {verificationLevel === 0
-                        ? "احراز هویت نشده"
-                        : verificationLevel === 1
-                        ? "سطح ۱"
-                        : `سطح ${verificationLevel}`}
-                    </span>
+                    {loading ? (
+                      <span className="animate-pulse bg-gray-600 w-20 h-4 rounded-md"></span>
+                    ) : (
+                      <span>
+                        {verificationLevel === 0
+                          ? "احراز هویت نشده"
+                          : verificationLevel === 1
+                          ? "سطح ۱"
+                          : `سطح ${verificationLevel}`}
+                      </span>
+                    )}
                     {showEmailAndName && <span>{userName}</span>}
                     <span>{userMobile}</span>
                     {showEmailAndName && <span>{userEmail}</span>}
@@ -183,7 +196,9 @@ export default function Profile() {
                 {/* --- بخش شرطی فرم احراز هویت (پایین) --- */}
                 {verificationLevel === 0 ? (
                   <form className="lg:w-[498px] w-full border-solid border-blue2 rounded-lg border-[1px] md:flex flex-col p-6 dark:text-white justify-center sm:justify-end">
-                    <h1 className="text-right mb-5 text-blue2">سطح ۱ : احراز هویت پایه</h1>
+                    <h1 className="text-right mb-5 text-blue2">
+                      سطح ۱ : احراز هویت پایه
+                    </h1>
                     <div className="flex flex-row items-center justify-end">
                       <span className="mr-2 text-black1">ثبت ایمیل</span>
                       <span className="icon-wrapper w-7 h7 text-blue2">
@@ -215,7 +230,9 @@ export default function Profile() {
                   </form>
                 ) : verificationLevel === 1 ? (
                   <form className="lg:w-[498px] text-gray15 w-full items-end mb-5 border-solid border-blue2 rounded-lg border-[1px] md:flex flex-col p-6 justify-center sm:justify-end">
-                    <h1 className="text-right text-blue2 font-medium">سطح ۲ : احراز هویت پیشرفته</h1>
+                    <h1 className="text-right text-blue2 font-medium">
+                      سطح ۲ : احراز هویت پیشرفته
+                    </h1>
                     <div className="flex flex-row items-center justify-end mt-5">
                       <span className="mr-2 text-black1">ثبت مدرک شناسایی</span>
                       <span className="icon-wrapper w-7 h-7 text-blue2">
@@ -231,8 +248,12 @@ export default function Profile() {
                     <div dir="rtl">
                       <p className="mt-5 text-right text-black1">دسترسی‌ها :</p>
                       <ul className="flex flex-col gap-1 list-inside list-disc text-gray5 lg:text-base text-sm">
-                        <li className="text-right">۵ میلیون تومان برداشت ریالی روزانه</li>
-                        <li className="text-right">۵ میلیون تومان برداشت ارزی روزانه</li>
+                        <li className="text-right">
+                          ۵ میلیون تومان برداشت ریالی روزانه
+                        </li>
+                        <li className="text-right">
+                          ۵ میلیون تومان برداشت ارزی روزانه
+                        </li>
                         <li className="text-right">دسترسی به ارز Utopia USD</li>
                       </ul>
                     </div>

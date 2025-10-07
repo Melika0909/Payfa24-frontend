@@ -122,7 +122,7 @@ export default function DepositPage() {
       const response = await apiRequest({
         url: "/api/wallets/fiat",
         method: "GET",
-        params: { withdraw: false },
+        params: { withdraw: null },
       });
       setFiatData(response);
     } catch (err: any) {
