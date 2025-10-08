@@ -126,22 +126,22 @@ export default function Profile() {
       : nameInitial || "N/A";
   };
 
-  // if (loading) {
-  //   return (
-  //     <HeaderLayout>
-  //       <div className="p-10 text-center">در حال بارگذاری اطلاعات...</div>
-  //     </HeaderLayout>
-  //   );
-  // }
-  // if (error || !userData) {
-  //   return (
-  //     <HeaderLayout>
-  //       <div className="p-10 text-center text-red1">
-  //         {error ? error.message : "خطا در دریافت اطلاعات کاربر."}
-  //       </div>
-  //     </HeaderLayout>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <HeaderLayout>
+        <div className="p-10 text-center">در حال بارگذاری اطلاعات...</div>
+      </HeaderLayout>
+    );
+  }
+  if (error || !userData) {
+    return (
+      <HeaderLayout>
+        <div className="p-10 text-center text-red1">
+          {error ? error.message : "خطا در دریافت اطلاعات کاربر."}
+        </div>
+      </HeaderLayout>
+    );
+  }
 
   return (
     <>
